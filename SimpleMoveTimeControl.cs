@@ -9,14 +9,14 @@ namespace BashiBashi
     public class SimpleMoveTimeControl : BaseTimeControl, ITimeControl
     {
         public Vector3 ToMovePosision;
-        public Transform[] ToMoveTransform;
+        public Transform[] ToMoveTransform = null;
         public Transform LookAtTransform;
         public bool LookAhead;
         [Range(0.1f, 10.0f)]
         public float ToMoveDuration = 1.0f;
         public DG.Tweening.Ease EasingType = Ease.Linear;
 
-        private Vector3 startPosition;
+        private Vector3 startPosition = Vector3.zero;
 
         private List<Vector3> m_Path = new List<Vector3>();
 
@@ -28,7 +28,7 @@ namespace BashiBashi
 
         void ITimeControl.OnControlTimeStart()
         {
-            if (ToMoveTransform != null)
+            if (ToMoveTransform != null && ToMoveTransform.Length != 0)
             {
                 m_Path.Clear();
                 
@@ -63,8 +63,11 @@ namespace BashiBashi
 
         void ITimeControl.OnControlTimeStop()
         {
-            transform.position = startPosition;
-            m_Sequence.Kill();
+            if (transform != null)
+            {
+                transform.position = startPosition;
+                m_Sequence.Kill();
+            }
             
             if (Application.isPlaying == false)
             {
